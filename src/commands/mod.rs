@@ -4,3 +4,4 @@ pub mod play;
 pub mod join;
 pub mod skip;
 pub mod pause;
+pub mod queue;

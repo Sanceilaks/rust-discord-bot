@@ -21,12 +21,13 @@ impl EventHandler for Handler {
                 "skip" => commands::skip::run(&ctx, &command, &command.data.options).await,
                 "pause" => commands::pause::run(&ctx, &command, &command.data.options).await,
                 "resume" => commands::resume::run(&ctx, &command, &command.data.options).await,
+                "queue" => commands::queue::run(&ctx, &command, &command.data.options).await,
                 _ => Err(Some("Такой комманды нет!".to_owned()))
             };
 
             if let Err(why) = content {
                 if let Some(message) = why {
-                    chat::edit_response(&ctx, &command, std::format!("Ошибка: {}", message.to_owned()).as_str()).await;
+                    chat::edit_response(&ctx, &command, std::format!("🚀Ошибка: {}", message.to_owned()).as_str()).await;
                 }
             } else {
                 if let Some(message) = content.unwrap() {
@@ -37,7 +38,7 @@ impl EventHandler for Handler {
     }
 
     async fn ready(&self, ctx: Context, ready: Ready) {
-        println!("{} is online now!", ready.user.name);
+        println!("🚀{}🚀 is online now!", ready.user.name);
 
         Command::create_global_application_command(&ctx.http, |c| {
             commands::test_command::register(c)
@@ -61,6 +62,10 @@ impl EventHandler for Handler {
 
         Command::create_global_application_command(&ctx.http, |c| {
             commands::pause::register(c)
+        }).await.expect("Cannot create command!");
+
+        Command::create_global_application_command(&ctx.http, |c| {
+            commands::queue::register(c)
         }).await.expect("Cannot create command!");
     }
 }

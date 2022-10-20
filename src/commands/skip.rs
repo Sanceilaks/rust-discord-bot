@@ -19,10 +19,10 @@ pub async fn run(ctx: &Context, msg: &ApplicationCommandInteraction, _options: &
                 let metadata = track.metadata().clone();
                 let title = metadata.title.unwrap();
                 let lenght = metadata.duration.unwrap();
-                return Ok(Some(std::format!("Теперь играет: {} ({:?})", title, lenght)));
+                return Ok(Some(std::format!("🚀Теперь играет: {} ({:?})", title, lenght)));
             }
 
-            Ok(Some("Очередь пуста!".to_owned()))
+            Ok(Some("🚀Очередь пуста!".to_owned()))
         } else {
             Err(Some("Ты не в голосовом канале!".to_owned()))
         }

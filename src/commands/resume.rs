@@ -17,7 +17,7 @@ pub async fn run(ctx: &Context, msg: &ApplicationCommandInteraction, _options: &
             if handler.queue().resume().is_err() {
                 return Err(Some("Нет треков в очереди".to_owned()));
             }
-            Ok(Some("Готово".to_owned()))
+            Ok(Some("🚀Готово".to_owned()))
         } else {
             Err(Some("Ты не в голосовом канале!".to_owned()))
         }

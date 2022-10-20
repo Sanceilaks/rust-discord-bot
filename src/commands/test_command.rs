@@ -8,7 +8,7 @@ use serenity::utils::{MessageBuilder, Content};
 pub async fn run(ctx: &Context, msg: &ApplicationCommandInteraction, _options: &[CommandDataOption]) -> Result<Option<String>, Option<String>> {
     let option = _options.get(0).unwrap().resolved.as_ref().unwrap();
     match option {
-        CommandDataOptionValue::User(user, _member) => Ok(Some(format!("Вы пинганули {}", user.name.to_owned()))),
+        CommandDataOptionValue::User(user, _member) => Ok(Some(format!("🚀Вы пинганули {}", user.name.to_owned()))),
         _ => Err(Some("Вы никого не пинганули".to_owned())),
     }
 }

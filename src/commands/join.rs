@@ -19,7 +19,7 @@ pub async fn run(ctx: &Context, msg: &ApplicationCommandInteraction, _options: &
 
     join_voice_channel(&ctx, connect_target, guild_id).await;
 
-    edit_response(&ctx, &msg, "Готово!").await;
+    edit_response(&ctx, &msg, "🚀Готово!").await;
 
     Ok(None)
 }
