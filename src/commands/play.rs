@@ -17,8 +17,6 @@ pub async fn run(
     let option = _options.get(0).unwrap().resolved.as_ref().unwrap();
 
     if let CommandDataOptionValue::String(arg) = option {
-        let is_url = arg.starts_with("http");
-
         let guild_id = msg.guild_id.unwrap();
         
         let target_voice = match utils::voice::get_voice_channel_for_user(&ctx, &msg) {
@@ -40,7 +38,7 @@ pub async fn run(
         if let Some(handler_mutex) = manager.get(guild_id) {
             let mut handler = handler_mutex.lock().await;
 
-            let stream = match is_url {
+            let stream = match arg.starts_with("http") {
                 true => {
                     match songbird::input::ytdl(arg).await {
                         Ok(res) => res,

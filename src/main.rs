@@ -8,6 +8,14 @@ mod utils;
 
 struct Handler;
 
+macro_rules! create_command{
+    ($register_function:expr, $ctx:expr) => {
+        Command::create_global_application_command(&$ctx.http, |c| {
+            $register_function(c)
+        }).await.expect("Cannot create command!");
+    }
+}
+
 #[async_trait]
 impl EventHandler for Handler {
     async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
@@ -40,33 +48,13 @@ impl EventHandler for Handler {
     async fn ready(&self, ctx: Context, ready: Ready) {
         println!("🚀{}🚀 is online now!", ready.user.name);
 
-        Command::create_global_application_command(&ctx.http, |c| {
-            commands::test_command::register(c)
-        }).await.expect("Cannot create command!");
-
-        Command::create_global_application_command(&ctx.http, |c| {
-            commands::play::register(c)
-        }).await.expect("Cannot create command!");
-
-        Command::create_global_application_command(&ctx.http, |c| {
-            commands::join::register(c)
-        }).await.expect("Cannot create command!");
-
-        Command::create_global_application_command(&ctx.http, |c| {
-            commands::skip::register(c)
-        }).await.expect("Cannot create command!");
-
-        Command::create_global_application_command(&ctx.http, |c| {
-            commands::resume::register(c)
-        }).await.expect("Cannot create command!");
-
-        Command::create_global_application_command(&ctx.http, |c| {
-            commands::pause::register(c)
-        }).await.expect("Cannot create command!");
-
-        Command::create_global_application_command(&ctx.http, |c| {
-            commands::queue::register(c)
-        }).await.expect("Cannot create command!");
+        create_command!(commands::test_command::register, ctx);
+        create_command!(commands::play::register, ctx);
+        create_command!(commands::join::register, ctx);
+        create_command!(commands::skip::register, ctx);
+        create_command!(commands::resume::register, ctx);
+        create_command!(commands::pause::register, ctx);
+        create_command!(commands::queue::register, ctx);
     }
 }
 
