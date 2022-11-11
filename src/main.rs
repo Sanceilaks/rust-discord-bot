@@ -12,7 +12,8 @@ macro_rules! create_command{
     ($register_function:expr, $ctx:expr) => {
         Command::create_global_application_command(&$ctx.http, |c| {
             $register_function(c)
-        }).await.expect("Cannot create command!");
+        }).await.expect(&std::format!("Cannot create command: {}", stringify!($register_function)));
+        println!("{} created!", stringify!($register_function));
     }
 }
 
@@ -47,6 +48,8 @@ impl EventHandler for Handler {
 
     async fn ready(&self, ctx: Context, ready: Ready) {
         println!("🚀{}🚀 is online now!", ready.user.name);
+        
+        println!("--- Registring commands ---");
 
         create_command!(commands::test_command::register, ctx);
         create_command!(commands::play::register, ctx);
@@ -55,6 +58,8 @@ impl EventHandler for Handler {
         create_command!(commands::resume::register, ctx);
         create_command!(commands::pause::register, ctx);
         create_command!(commands::queue::register, ctx);
+
+        println!("---------------------------");
     }
 }
 
