@@ -1,4 +1,4 @@
-use serenity::{prelude::{GatewayIntents, Context, EventHandler}, Client, model::prelude::{interaction::Interaction, Ready, command::Command}};
+use serenity::{prelude::{GatewayIntents, Context, EventHandler}, Client, model::prelude::{interaction::Interaction, Ready, command::Command, ResumedEvent}};
 use serenity::async_trait;
 use songbird::SerenityInit;
 use utils::chat;
@@ -45,6 +45,10 @@ impl EventHandler for Handler {
             }
         }
     }
+
+	async fn resume(&self, ctx: Context, event: ResumedEvent) {
+		println!("Resumed.\n{:?}", event.trace);
+	}
 
     async fn ready(&self, ctx: Context, ready: Ready) {
         println!("🚀{}🚀 is online now!", ready.user.name);

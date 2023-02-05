@@ -3,11 +3,9 @@ use serenity::model::prelude::command::CommandOptionType;
 use serenity::model::prelude::interaction::application_command::{
     ApplicationCommandInteraction, CommandDataOption, CommandDataOptionValue,
 };
-use serenity::model::prelude::ChannelId;
 use serenity::prelude::Context;
-use songbird::input::restartable;
 
-use crate::utils;
+use crate::utils::{self, yandex_music};
 
 pub async fn run(
     ctx: &Context,
@@ -18,7 +16,7 @@ pub async fn run(
 
     if let CommandDataOptionValue::String(arg) = option {
         let guild_id = msg.guild_id.unwrap();
-        
+
         let target_voice = match utils::voice::get_voice_channel_for_user(&ctx, &msg) {
             None => {
                 return Err(Some("Ты не в голосовом".to_owned()));
@@ -40,34 +38,42 @@ pub async fn run(
 
             let stream = match arg.starts_with("http") {
                 true => {
-                    match songbird::input::ytdl(arg).await {
-                        Ok(res) => res,
-                        Err(why) => {
-                            println!("Cannot cannot download url {}", arg.to_owned());
-                            return Err(Some(format!("Не могу найти {}", arg.to_owned()).to_owned()));
-                        }
-                    }
-                },
-                false => {
-                    match songbird::input::ytdl_search(arg).await {
-                        Ok(res) => res,
-                        Err(why) => {
-                            return Err(Some(format!("Не могу найти {}", arg.to_owned()).to_owned()));
+                    if arg.contains("yandex") {
+                        yandex_music::get_track(&arg).await.unwrap()
+                    } else {
+                        match songbird::input::ytdl(arg).await {
+                            Ok(res) => res,
+                            Err(why) => {
+                                println!("Cannot cannot download url {}", arg.to_owned());
+                                return Err(Some(
+                                    format!("Не могу найти {}", arg.to_owned()).to_owned(),
+                                ));
+                            }
                         }
                     }
                 }
+                false => match songbird::input::ytdl_search(arg).await {
+                    Ok(res) => res,
+                    Err(why) => {
+                        return Err(Some(format!("Не могу найти {}", arg.to_owned()).to_owned()));
+                    }
+                },
             };
 
             let metadata = stream.metadata.clone();
 
             let handle = handler.enqueue_source(stream.into());
 
-            return Ok(Some(std::format!(
-                "🚀Включил {} ({:?}). Она {} в очереди",
-                metadata.title.unwrap(),
-                metadata.duration.unwrap(),
-                handler.queue().len()
-            )));
+            if let Some(title) = metadata.title {
+                return Ok(Some(std::format!(
+                    "🚀Включил {} ({:?}). Она {} в очереди",
+                    title,
+                    metadata.duration.unwrap(),
+                    handler.queue().len()
+                )));
+            } else {
+                return Ok(Some(std::format!("🚀Включил")));
+            }
         }
 
         Ok(Some("🚀Включаю".to_owned()))

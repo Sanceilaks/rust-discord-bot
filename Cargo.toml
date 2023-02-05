@@ -9,3 +9,11 @@ edition = "2021"
 serenity = { version = "*", default-features = false, features = ["client", "gateway", "rustls_backend", "model", "cache", "voice"]}
 tokio = { version = "*", features = ["macros", "rt-multi-thread"]}
 songbird = { version = "*", features = ["builtin-queue"]}
+regex = "*"
+reqwest = { version = "*", features = ["json", "stream", "blocking"] }
+serde_json = "*"
+serde = { version = "*", features = ["derive"] }
+serde-xml-rs = "*"
+md5 = "*"
+futures = "*"
+streamcatcher = "*"
